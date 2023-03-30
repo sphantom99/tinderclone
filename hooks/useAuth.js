@@ -1,6 +1,5 @@
 import { View, Text } from "react-native";
 import React, { useEffect } from "react";
-import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import {
   GoogleAuthProvider,
@@ -9,7 +8,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "../firebase";
-WebBrowser.maybeCompleteAuthSession();
 const AuthContext = React.createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -78,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const memoedValue = React.useMemo(
-    () => ({ user, signInWithGoogle, loading, error, logout }),
+    () => ({ user, signInWithGoogle, loading, error, logout, request }),
     [user, loading, error]
   );
 

@@ -11,7 +11,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle, request } = useAuth();
   const navigation = useNavigation();
   useLayoutEffect(() => navigation.setOptions({ headerShown: false }), []);
   console.log("login", user);
