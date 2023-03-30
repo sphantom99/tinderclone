@@ -30,7 +30,10 @@ const HomeScreen = () => {
               source={{ uri: user.photoURL }}
             />
           </TouchableOpacity>
-          <TouchableOpacity className="">
+          <TouchableOpacity
+            className=""
+            onPress={() => navigation.navigate("Modal")}
+          >
             <Image
               className="h-16 w-12 "
               source={require("../assets/tinderLogo.png")}
@@ -134,8 +137,8 @@ const HomeScreen = () => {
                       <Text className="text-xl font-bold ">
                         {card.firstName}
                       </Text>
-                      <Text className="">{card.quote}</Text>
                       <Text className="">{card.job}</Text>
+                      <Text className="">{card.quote}</Text>
                     </View>
                     <Text className="text-xl font-bold ">{card.age}</Text>
                   </View>
