@@ -16,12 +16,7 @@ const LoginScreen = () => {
   useLayoutEffect(() => navigation.setOptions({ headerShown: false }), []);
   console.log("login", user);
   return (
-    <View className="flex-1">
-      <ImageBackground
-        resizeMode="cover"
-        className="flex-1"
-        source={require("../assets/27505.png")}
-      ></ImageBackground>
+    <View className="flex-1 bg-red-400">
       <Text
         style={{ marginHorizontal: "37%" }}
         className="absolute top-20 w-52 text-white text-3xl font-bold"
