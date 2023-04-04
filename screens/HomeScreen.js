@@ -16,14 +16,17 @@ import { styled } from "nativewind";
 import {
   collection,
   doc,
+  DocumentSnapshot,
   getDoc,
   getDocs,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import generateId from "../lib/generateId";
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const HomeScreen = () => {
@@ -123,11 +126,44 @@ const HomeScreen = () => {
               if (!cards[cardIndex]) return;
 
               const userSwiped = cards[cardIndex];
-              console.log("swiped right on", userSwiped.displayName);
 
-              setDoc(
-                doc(db, "users", user.id, "yesses", userSwiped.id),
-                userSwiped
+              getDoc(doc(db, "users", userSwiped.id, "yesses", user.id)).then(
+                (documentSnapshot) => {
+                  console.log("user", user);
+                  console.log("userSwiped", userSwiped);
+                  console.log(
+                    "documentSnapshot",
+                    JSON.stringify(documentSnapshot)
+                  );
+                  console.log(documentSnapshot.exists());
+                  if (documentSnapshot.exists()) {
+                    console.log("They have said yes before you.");
+                    console.log("you matched with", userSwiped.displayName);
+                    setDoc(
+                      doc(db, "users", user.id, "yesses", userSwiped.id),
+                      userSwiped
+                    );
+
+                    setDoc(
+                      doc(db, "matches", generateId(user.id, userSwiped.id)),
+                      {
+                        users: {
+                          [user.id]: user,
+                          [userSwiped.id]: userSwiped,
+                        },
+                        usersMatched: [user.id, userSwiped.id],
+                        timestamp: serverTimestamp(),
+                      }
+                    );
+                    navigation.navigate("Match", { user, userSwiped });
+                  } else {
+                    console.log("swiped right on", userSwiped.displayName);
+                    setDoc(
+                      doc(db, "users", user.id, "yesses", userSwiped.id),
+                      userSwiped
+                    );
+                  }
+                }
               );
             }}
             stackSize={5}
