@@ -3,19 +3,34 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styled } from "nativewind";
 import useAuth from "../hooks/useAuth";
-import { serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { db } from "../firebase";
+import SelectDropdown from "react-native-select-dropdown";
 
 const StyledSafeAreaView = styled(SafeAreaView);
 const ModalScreen = () => {
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [profilePic, setProfilePic] = React.useState(null);
   const [occupation, setOccupation] = React.useState(null);
   const [quote, setQuote] = React.useState(null);
+  const [interestedIn, setInterestedIn] = React.useState(null);
+  const [sex, setSex] = React.useState(null);
   const [age, setAge] = React.useState(null);
 
   const updateProfile = () => {
+    setUser({
+      ...user,
+      id: user.uid,
+      displayName: user.displayName,
+      profilePic,
+      occupation,
+      quote,
+      age,
+      interestedIn,
+      sex,
+    });
     setDoc(doc(db, "users", user.uid), {
       id: user.uid,
       displayName: user.displayName,
@@ -23,6 +38,8 @@ const ModalScreen = () => {
       occupation,
       quote,
       age,
+      interestedIn,
+      sex,
       timestamp: serverTimestamp(),
     }).then(() => navigation.navigate("Home"));
   };
@@ -80,9 +97,24 @@ const ModalScreen = () => {
           keyboardType="numeric"
           maxLength={2}
         />
+        <Text className="mt-5 text-md font-bold text-center text-red-400">
+          Step 5: I'm a
+        </Text>
+        <SelectDropdown
+          data={["Male", "Female", "Other"]}
+          onSelect={(selectedItem) => setSex(selectedItem)}
+        />
+        <Text className="mt-5 text-md font-bold text-center text-red-400">
+          Step 6: Interested In
+        </Text>
+        <SelectDropdown
+          data={["Male", "Female", "Other"]}
+          onSelect={(selectedItem) => setInterestedIn(selectedItem)}
+        />
 
         <TouchableOpacity
           disabled={incompleteForm}
+          onPress={() => updateProfile()}
           className={` absolute bottom-10 w-30 p-4 rounded-xl  ${
             incompleteForm ? "bg-gray-400" : "bg-red-400"
           }`}

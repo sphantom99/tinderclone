@@ -7,7 +7,8 @@ import {
   signInWithCredential,
   signOut,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 const AuthContext = React.createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -56,15 +57,25 @@ export const AuthProvider = ({ children }) => {
     try {
       await promptAsync();
 
-      console.log("resposne", response);
+      // console.log("resposne", response);
       if (response?.type === "success") {
         // console.log(response);
         const { idToken, accessToken } = response.authentication;
-        // console.log(idToken, accessToken);
+        // console.log("idToken", idToken);
         const credential = GoogleAuthProvider.credential(idToken, accessToken);
         // console.log("cred", credential);
-        await signInWithCredential(auth, credential);
-        console.log("signed in");
+        const userCred = await signInWithCredential(auth, credential);
+        // console.log("userCred", JSON.stringify(userCred));
+        console.log("uid", userCred.user.uid);
+        const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
+        const userData = userDoc.data();
+        console.log("data", userData);
+        if (userData !== undefined) {
+          setUser(userData);
+        }
+        // const userRef = db.collection("users").doc(userCred.user.uid);
+        // const newUserInfo = await userRef.get();
+        // console.log("newUserInfo", newUserInfo);
       }
       return Promise.reject();
     } catch (err) {
@@ -76,7 +87,15 @@ export const AuthProvider = ({ children }) => {
   }
 
   const memoedValue = React.useMemo(
-    () => ({ user, signInWithGoogle, loading, error, logout, request }),
+    () => ({
+      user,
+      signInWithGoogle,
+      loading,
+      error,
+      logout,
+      request,
+      setUser,
+    }),
     [user, loading, error]
   );
 
