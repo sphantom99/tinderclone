@@ -13,7 +13,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Entypo, AntDesign } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import { styled } from "nativewind";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 const StyledSafeAreaView = styled(SafeAreaView);
@@ -36,22 +45,38 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchCards = async () => {
       // console.log(user);
-      onSnapshot(collection(db, "users"), (snapshot) => {
-        const cards = snapshot?.docs
-          ?.filter(
-            (doc) =>
-              doc.id !== user?.id && doc.data()?.sex === user?.interestedIn
-          )
-          ?.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-        console.log(cards);
-        setCards(cards);
-      });
+      const passes = await getDocs(
+        collection(db, "users", user.id, "passes")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const yesses = await getDocs(
+        collection(db, "users", user.id, "yesses")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const passedUserIds = passes.length > 0 ? passes : ["test"];
+      const yessedUserIds = passes.length > 0 ? yesses : ["test"];
+      onSnapshot(
+        query(
+          collection(db, "users"),
+          where("id", "not-in", [...passedUserIds, ...yessedUserIds])
+        ),
+        (snapshot) => {
+          const cards = snapshot?.docs
+            ?.filter(
+              (doc) =>
+                doc.id !== user?.id && doc.data()?.sex === user?.interestedIn
+            )
+            ?.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+          console.log(cards);
+          setCards(cards);
+        }
+      );
     };
     fetchCards();
-  }, [user]);
+  }, [db, user]);
 
   return (
     <>
@@ -83,8 +108,28 @@ const HomeScreen = () => {
           <Swiper
             ref={swipeRef}
             onSwipedAll={() => setFinishedCards(true)}
-            onSwipedLeft={() => console.log("swiped left")}
-            onSwipedRight={() => console.log("swiped right")}
+            onSwipedLeft={(cardIndex) => {
+              if (!cards[cardIndex]) return;
+
+              const userSwiped = cards[cardIndex];
+              console.log("swiped left", userSwiped.displayName);
+
+              setDoc(
+                doc(db, "users", user.id, "passes", userSwiped.id),
+                userSwiped
+              );
+            }}
+            onSwipedRight={(cardIndex) => {
+              if (!cards[cardIndex]) return;
+
+              const userSwiped = cards[cardIndex];
+              console.log("swiped right on", userSwiped.displayName);
+
+              setDoc(
+                doc(db, "users", user.id, "yesses", userSwiped.id),
+                userSwiped
+              );
+            }}
             stackSize={5}
             cardIndex={0}
             verticalSwipe={false}
@@ -116,7 +161,7 @@ const HomeScreen = () => {
             }}
             containerStyle={{ backgroundColor: "transparent" }}
             cards={
-              finishedCards ? [{ id: 1 }] : cards
+              !finishedCards ? cards : [{ id: 0, displayName: "No more cards" }]
 
               /*[
                     {
@@ -199,7 +244,7 @@ const HomeScreen = () => {
                 </View>
               )
             }
-          ></Swiper>
+          />
         </View>
         <View className="flex flex-row justify-evenly mb-10">
           <TouchableOpacity
