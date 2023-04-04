@@ -35,7 +35,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const fetchCards = async () => {
-      console.log(user);
+      // console.log(user);
       onSnapshot(collection(db, "users"), (snapshot) => {
         const cards = snapshot?.docs
           ?.filter(

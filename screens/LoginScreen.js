@@ -98,10 +98,7 @@ const LoginScreen = () => {
         style={{ marginHorizontal: "20%" }}
         disabled={!request}
         className="  bottom-40 w-52 absolute bg-white p-4 rounded-2xl text-align-center"
-        onPress={() => {
-          console.log("clicked");
-          signInWithGoogle();
-        }}
+        onPress={signInWithGoogle}
       >
         <Text className=" font-semibold text-black text-lg w-full">
           Sign in & Start swiping

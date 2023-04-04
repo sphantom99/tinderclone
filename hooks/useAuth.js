@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
       console.log(err);
       setError(err);
     });
+    setUser(null);
   };
 
   // async function signInWithGoogle() {

@@ -13,6 +13,7 @@ const StackNavigator = () => {
   const { user } = useAuth();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {console.log("stack", user)}
       {user ? (
         <>
           <Stack.Group>
