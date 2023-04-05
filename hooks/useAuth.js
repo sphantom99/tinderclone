@@ -13,6 +13,7 @@ const AuthContext = React.createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = React.useState(null);
+  const [initialUser, setInitialUser] = React.useState(null);
 
   // useEffect(
   //   () =>
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }) => {
       setError(err);
     });
     setUser(null);
+    setInitialUser(null);
   };
 
   // async function signInWithGoogle() {
@@ -87,6 +89,8 @@ export const AuthProvider = ({ children }) => {
       user,
       logout,
       setUser,
+      setInitialUser,
+      initialUser,
     }),
     [user]
   );

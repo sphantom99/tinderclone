@@ -15,7 +15,7 @@ import * as WebBrowser from "expo-web-browser";
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser, setInitialUser } = useAuth();
   const navigation = useNavigation();
   useLayoutEffect(() => navigation.setOptions({ headerShown: false }), []);
   console.log("login", user);
@@ -27,10 +27,10 @@ const LoginScreen = () => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           console.log("user is logged in");
-          setUser(user);
+          setInitialUser(user);
         } else {
           console.log("user is logged out");
-          setUser(null);
+          setInitialUser(null);
         }
         setLoadingInitial(false);
       }),
