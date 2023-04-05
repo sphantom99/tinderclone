@@ -88,7 +88,7 @@ const HomeScreen = () => {
           <TouchableOpacity className="" onPress={() => logout()}>
             <Image
               className="h-12 w-12 rounded-full "
-              source={{ uri: user.photoURL ?? user.profilePic }}
+              source={{ uri: user?.profilePic }}
             />
           </TouchableOpacity>
           <TouchableOpacity
