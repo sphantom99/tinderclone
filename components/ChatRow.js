@@ -10,7 +10,10 @@ const ChatRow = ({ matchDetails }) => {
   const navigation = useNavigation();
   const { user } = useAuth();
   console.log(matchDetails);
-  const matchedUser = matchDetails.users[`${matchDetails.usersMatched[1]}`];
+  const matchedUser =
+    matchDetails.users[
+      `${matchDetails.usersMatched.filter((word) => word !== user.id)[0]}`
+    ];
   console.log(matchedUser);
   return (
     <TouchableOpacity
