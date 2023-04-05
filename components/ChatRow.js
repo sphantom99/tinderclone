@@ -58,11 +58,10 @@ const ChatRow = ({ matchDetails }) => {
           {matchedUser?.displayName}
         </Text>
         <Text>
-          {console.log(lastMessage.userId, user.id)}
           {lastMessage
-            ? lastMessage.userId === user.id
-              ? "You: " + lastMessage.message
-              : matchedUser.displayName + ": " + lastMessage.message
+            ? lastMessage?.userId === user.id
+              ? "You: " + lastMessage?.message
+              : matchedUser?.displayName + ": " + lastMessage?.message
             : "Say Hi"}
         </Text>
       </View>
