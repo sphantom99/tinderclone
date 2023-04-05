@@ -13,7 +13,7 @@ const MatchScreen = () => {
     <SafeAreaView>
       <View className="flex bg-red-300 w-full  h-full rounded-3xl mt-16 p-4 align-middle content-center justify-center items-center space-y-10 ">
         <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.goBack()}
           className="absolute top-5 right-5"
         >
           <AntDesign name="close" size={32} color="white" />
