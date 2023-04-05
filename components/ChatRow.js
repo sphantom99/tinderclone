@@ -5,7 +5,13 @@ import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import useAuth from "../hooks/useAuth";
 import { StyleSheet } from "react-native";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 const ChatRow = ({ matchDetails }) => {
@@ -22,7 +28,8 @@ const ChatRow = ({ matchDetails }) => {
     onSnapshot(
       query(
         collection(db, "matches", matchDetails.id, "messages"),
-        orderBy("timestamp", "desc")
+        orderBy("timestamp", "desc"),
+        limit(1)
       ),
       (snapshot) =>
         setLastMessage(
