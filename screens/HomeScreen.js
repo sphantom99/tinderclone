@@ -32,13 +32,12 @@ const StyledSafeAreaView = styled(SafeAreaView);
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [finishedCards, setFinishedCards] = React.useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, initialUser } = useAuth();
   const [cards, setCards] = React.useState([]);
   const swipeRef = useRef(null);
 
   useLayoutEffect(() =>
-    onSnapshot(doc(db, "users", user.id ?? user.uid), (snapshot) => {
-      console.log(snapshot);
+    onSnapshot(doc(db, "users", initialUser.uid), (snapshot) => {
       if (!snapshot.exists()) {
         navigation.navigate("Modal");
       }
@@ -73,7 +72,6 @@ const HomeScreen = () => {
               id: doc.id,
               ...doc.data(),
             }));
-          console.log(cards);
           setCards(cards);
         }
       );
@@ -87,8 +85,9 @@ const HomeScreen = () => {
         <View className="flex flex-row justify-between align-middle items-center p-3">
           <TouchableOpacity className="" onPress={() => logout()}>
             <Image
+              alt="profile picture"
               className="h-12 w-12 rounded-full "
-              source={{ uri: user?.profilePic }}
+              source={{ uri: user?.profilePic ?? initialUser.photoURL }}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -131,10 +130,6 @@ const HomeScreen = () => {
                 (documentSnapshot) => {
                   console.log("user", user);
                   console.log("userSwiped", userSwiped);
-                  console.log(
-                    "documentSnapshot",
-                    JSON.stringify(documentSnapshot)
-                  );
                   console.log(documentSnapshot.exists());
                   if (documentSnapshot.exists()) {
                     console.log("They have said yes before you.");

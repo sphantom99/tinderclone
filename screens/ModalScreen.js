@@ -13,7 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 const StyledSafeAreaView = styled(SafeAreaView);
 const ModalScreen = () => {
   const navigation = useNavigation();
-  const { user, setUser } = useAuth();
+  const { user, setUser, initialUser } = useAuth();
   const [profilePic, setProfilePic] = React.useState(null);
   const [occupation, setOccupation] = React.useState(null);
   const [quote, setQuote] = React.useState(null);
@@ -23,9 +23,9 @@ const ModalScreen = () => {
 
   const updateProfile = () => {
     setUser({
-      ...user,
-      id: user.uid,
-      displayName: user.displayName,
+      ...initialUser,
+      id: initialUser.uid,
+      displayName: initialUser.displayName,
       profilePic,
       occupation,
       quote,
@@ -33,9 +33,9 @@ const ModalScreen = () => {
       interestedIn,
       sex,
     });
-    setDoc(doc(db, "users", user.uid), {
-      id: user.uid,
-      displayName: user.displayName,
+    setDoc(doc(db, "users", initialUser.uid), {
+      id: initialUser.uid,
+      displayName: initialUser.displayName,
       profilePic,
       occupation,
       quote,
@@ -46,7 +46,8 @@ const ModalScreen = () => {
     }).then(() => navigation.navigate("Home"));
   };
 
-  const incompleteForm = !profilePic || !occupation || !quote || !age;
+  const incompleteForm =
+    !profilePic || !occupation || !quote || !age || !sex || !interestedIn;
   return (
     <StyledSafeAreaView>
       <View className="w-full m-auto h-full rounded-lg bg-white mt-5 p-4 text-center items-center space-y-5">
@@ -65,7 +66,7 @@ const ModalScreen = () => {
           <Text className=" font-medium text-black text-4xl">tinder</Text>
         </View>
         <Text className="mt-5 text-lg font-bold text-center">
-          Welcome {user.displayName}
+          Welcome {initialUser.displayName}
         </Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}

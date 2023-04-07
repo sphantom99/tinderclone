@@ -3,7 +3,6 @@ import React from "react";
 import { Image } from "react-native";
 
 const Message = ({ userMessage, swipedUserProfilePic, message }) => {
-  console.log(message);
   return (
     <View className={`flex-row items-center ${userMessage ? "ml-auto" : null}`}>
       {userMessage ? null : (

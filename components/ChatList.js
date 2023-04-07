@@ -9,7 +9,6 @@ import ChatRow from "./ChatRow";
 const ChatList = () => {
   const [matches, setMatches] = useState([]);
   const { user } = useAuth();
-  console.log(user);
   useEffect(
     () =>
       onSnapshot(

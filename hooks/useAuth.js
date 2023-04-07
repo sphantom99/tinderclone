@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
       setInitialUser,
       initialUser,
     }),
-    [user]
+    [user, initialUser]
   );
 
   return (

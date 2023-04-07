@@ -31,9 +31,7 @@ const MessagesScreen = () => {
     { id: "1", message: "Hello", userId: "VcBX1QI0WdfySQQuWvR9Lks7lhx2" },
     { id: "2", message: "Hello", userId: "ZvDfjCPa6S1KmEnv9pQ8" },
   ]);
-  console.log(params);
   const sendMessage = () => {
-    console.log(input);
     addDoc(collection(db, "matches", params.id, "messages"), {
       timestamp: serverTimestamp(),
       userId: user.id,

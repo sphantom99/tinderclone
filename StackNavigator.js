@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
 import ChatsScreen from "./screens/ChatsScreen";
@@ -13,9 +13,15 @@ const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   const { user, initialUser } = useAuth();
+  console.log("in login", initialUser);
+  // const [userExists, setUserExists] = React.useState(initialUser ?? false);
+  // useEffect(() => {
+  //   console.log(`user Changed ${initialUser}`);
+  //   setUserExists(initialUser);
+  // }, [initialUser]);
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {console.log("stack", user)}
       {initialUser ? (
         <>
           <Stack.Group>

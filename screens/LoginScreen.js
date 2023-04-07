@@ -18,27 +18,32 @@ const LoginScreen = () => {
   const { user, setUser, setInitialUser } = useAuth();
   const navigation = useNavigation();
   useLayoutEffect(() => navigation.setOptions({ headerShown: false }), []);
-  console.log("login", user);
-  const [loadingInitial, setLoadingInitial] = React.useState(true);
-  const [loading, setLoading] = React.useState(false);
+  // const [loadingInitial, setLoadingInitial] = React.useState(true);
+  // const [loading, setLoading] = React.useState(false);
 
   useEffect(
     () =>
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log("user is logged in");
-          setInitialUser(user);
-        } else {
-          console.log("user is logged out");
-          setInitialUser(null);
+      onAuthStateChanged(
+        auth,
+        (userA) => {
+          if (userA) {
+            console.log("user is logged in");
+            console.log(userA);
+            setInitialUser(userA);
+          } else {
+            console.log("user is logged out");
+            setInitialUser(null);
+          }
+        },
+        (err) => {
+          console.log(`authChange error: ${JSON.stringify(err)}`);
         }
-        setLoadingInitial(false);
-      }),
+      ),
     []
   );
 
   const [error, setError] = React.useState(null);
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [request, _, promptAsync] = Google.useAuthRequest({
     expoClientId:
       "29097968040-vl0u3kff0ecgq3llo195h53reijoa8oe.apps.googleusercontent.com",
     androidClientId:
@@ -48,10 +53,9 @@ const LoginScreen = () => {
   });
 
   async function signInWithGoogle() {
-    setLoading(true);
+    // setLoading(true);
     try {
-      await promptAsync();
-
+      const response = await promptAsync();
       // console.log("resposne", response);
       if (response?.type === "success") {
         // console.log(response);
@@ -71,12 +75,13 @@ const LoginScreen = () => {
         // const userRef = db.collection("users").doc(userCred.user.uid);
         // const newUserInfo = await userRef.get();
         // console.log("newUserInfo", newUserInfo);
+      } else {
+        console.log(`error: ${JSON.stringify(response)}`);
+        setError("Something went wrong");
       }
     } catch (err) {
       console.log(err);
       setError(err);
-    } finally {
-      setLoading(false);
     }
   }
 
