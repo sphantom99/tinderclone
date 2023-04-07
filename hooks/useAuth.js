@@ -42,12 +42,15 @@ export const AuthProvider = ({ children }) => {
   // });
 
   const logout = async () => {
-    signOut(auth).catch((err) => {
-      console.log(err);
-      setError(err);
-    });
-    setUser(null);
-    setInitialUser(null);
+    signOut(auth)
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      })
+      .then(() => {
+        setUser(null);
+        setInitialUser(null);
+      });
   };
 
   // async function signInWithGoogle() {
