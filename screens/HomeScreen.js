@@ -47,34 +47,36 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchCards = async () => {
       // console.log(user);
-      const passes = await getDocs(
-        collection(db, "users", user.id, "passes")
-      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+      if (user) {
+        const passes = await getDocs(
+          collection(db, "users", user.id, "passes")
+        ).then((snapshot) => snapshot.docs.map((doc) => doc?.id));
 
-      const yesses = await getDocs(
-        collection(db, "users", user.id, "yesses")
-      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+        const yesses = await getDocs(
+          collection(db, "users", user.id, "yesses")
+        ).then((snapshot) => snapshot.docs.map((doc) => doc?.id));
 
-      const passedUserIds = passes.length > 0 ? passes : ["test"];
-      const yessedUserIds = passes.length > 0 ? yesses : ["test"];
-      onSnapshot(
-        query(
-          collection(db, "users"),
-          where("id", "not-in", [...passedUserIds, ...yessedUserIds])
-        ),
-        (snapshot) => {
-          const cards = snapshot?.docs
-            ?.filter(
-              (doc) =>
-                doc.id !== user?.id && doc.data()?.sex === user?.interestedIn
-            )
-            ?.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-          setCards(cards);
-        }
-      );
+        const passedUserIds = passes.length > 0 ? passes : ["test"];
+        const yessedUserIds = passes.length > 0 ? yesses : ["test"];
+        onSnapshot(
+          query(
+            collection(db, "users"),
+            where("id", "not-in", [...passedUserIds, ...yessedUserIds])
+          ),
+          (snapshot) => {
+            const cards = snapshot?.docs
+              ?.filter(
+                (doc) =>
+                  doc?.id !== user?.id && doc.data()?.sex === user?.interestedIn
+              )
+              ?.map((doc) => ({
+                id: doc?.id,
+                ...doc.data(),
+              }));
+            setCards(cards);
+          }
+        );
+      }
     };
     fetchCards();
   }, [db, user]);
@@ -108,8 +110,9 @@ const HomeScreen = () => {
         </View>
         <View className="absolute top-16">
           <Swiper
+            key={cards.length}
             ref={swipeRef}
-            onSwipedAll={() => setFinishedCards(true)}
+            onSwipedAll={() => setCards([])}
             onSwipedLeft={(cardIndex) => {
               if (!cards[cardIndex]) return;
 
@@ -161,7 +164,7 @@ const HomeScreen = () => {
                 }
               );
             }}
-            stackSize={5}
+            stackSize={cards.length > 0 ? cards.length : 5}
             cardIndex={0}
             verticalSwipe={false}
             animateCardOpacity
@@ -191,54 +194,16 @@ const HomeScreen = () => {
               },
             }}
             containerStyle={{ backgroundColor: "transparent" }}
-            cards={
-              !finishedCards ? cards : [{ id: 0, displayName: "No more cards" }]
-
-              /*[
-                    {
-                      job: "Software Engineer",
-                      quote: "Life's too short, make the most of it!",
-                      age: 25,
-                      id: 1,
-                      firstName: "John",
-                    },
-                    {
-                      job: "Software Engineer",
-                      quote: "Life's too short, make the most of it!",
-                      age: 25,
-                      id: 2,
-                      firstName: "Jane",
-                    },
-                    {
-                      job: "Software Engineer",
-                      quote: "Life's too short, make the most of it!",
-                      age: 25,
-                      id: 3,
-                      firstName: "Jim",
-                    },
-                    {
-                      job: "Software Engineer",
-                      quote: "Life's too short, make the most of it!",
-                      age: 25,
-                      id: 4,
-                      firstName: "George",
-                    },
-                    {
-                      job: "Software Engineer",
-                      quote: "Life's too short, make the most of it!",
-                      age: 25,
-                      id: 5,
-                      firstName: "Alex",
-                    },
-                  ] */
-            }
-            renderCard={(card) =>
-              !finishedCards ? (
+            cards={cards.length > 0 ? cards : []}
+            backgroundColor="#4FD0E9"
+            renderCard={(card, cardIdx) => {
+              return card ? (
                 <View
                   key={card?.id}
                   style={styles.cardShadow}
                   className="bg-white h-5/6 rounded-xl flex flex-column shadow-2xl"
                 >
+                  {console.log(card)}
                   <Image
                     className="h-4/6 w-full rounded-t-xl"
                     source={{
@@ -260,21 +225,18 @@ const HomeScreen = () => {
                 </View>
               ) : (
                 <View
-                  key={card?.id}
                   style={styles.cardShadow}
-                  className="bg-white h-5/6 rounded-xl flex flex-column shadow-2xl"
+                  className="bg-white h-5/6 rounded-xl flex flex-column shadow-2xl items-center justify-center"
                 >
                   <Image
                     className="h-4/6 w-full rounded-t-xl"
-                    style={{ height: 300, width: 300 }}
-                    source={{
-                      uri: "https://png.pngtree.com/png-vector/20210121/ourmid/pngtree-3d-emoji-expression-with-sad-face-on-transparent-png-image_2771802.jpg",
-                    }}
+                    style={{ height: 200, width: 200 }}
+                    source={require("../assets/sadEmoji.png")}
                   />
-                  <Text>No more profiles</Text>
+                  <Text className="text-xl font-bold">No more profiles</Text>
                 </View>
-              )
-            }
+              );
+            }}
           />
         </View>
         <View className="flex flex-row justify-evenly mb-10">

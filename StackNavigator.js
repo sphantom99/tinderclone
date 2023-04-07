@@ -13,12 +13,6 @@ const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   const { user, initialUser } = useAuth();
-  console.log("in login", initialUser);
-  // const [userExists, setUserExists] = React.useState(initialUser ?? false);
-  // useEffect(() => {
-  //   console.log(`user Changed ${initialUser}`);
-  //   setUserExists(initialUser);
-  // }, [initialUser]);
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
