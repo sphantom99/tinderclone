@@ -45,7 +45,7 @@ const LoginScreen = () => {
   const [error, setError] = React.useState(null);
   const [request, _, promptAsync] = Google.useAuthRequest({
     expoClientId:
-      "29097968040-vl0u3kff0ecgq3llo195h53reijoa8oe.apps.googleusercontent.com",
+      "29097968040-tpf7b9cehbmsrnu129646nfork04j7n3.apps.googleusercontent.com",
     androidClientId:
       "29097968040-v7c77cev6n8p57uifg3mcqaoq0jc2c75.apps.googleusercontent.com",
     scopes: ["profile", "email"],
